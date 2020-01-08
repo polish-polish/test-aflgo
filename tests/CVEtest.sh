@@ -126,7 +126,7 @@ cat $TMP_DIR/BBnames.txt | rev | cut -d: -f2- | rev | sort | uniq > $TMP_DIR/BBn
 cat $TMP_DIR/BBcalls.txt | sort | uniq > $TMP_DIR/BBcalls2.txt && mv $TMP_DIR/BBcalls2.txt $TMP_DIR/BBcalls.txt
 
 #### Generate distance
-if [ ! -e distance.cfg.txt ];then
+if [ ! -e $TMP_DIR/distance.cfg.txt ];then
 	PROGRAM_NAME=cxxfilt
 	PROGRAM_DIR=$OBJ_1/binutils/
 	$AFLGO/scripts/genDistance.sh $PROGRAM_DIR $TMP_DIR $PROGRAM_NAME
@@ -135,8 +135,8 @@ echo "Distance values:"
 head -n5 $TMP_DIR/distance.cfg.txt
 echo "..."
 tail -n5 $TMP_DIR/distance.cfg.txt
-exit
-export CFLAGS="-DFORTIFY_SOURCE=2 -fstack-protector-all -fno-omit-frame-pointer -g -Wno-error -distance=$TMP_DIR/distance.cfg.txt -outdir=$TMP_DIR"
+
+export CFLAGS="-DFORTIFY_SOURCE=2 -fstack-protector-all -fno-omit-frame-pointer -g3 -Wno-error -distance=$TMP_DIR/distance.cfg.txt -outdir=$TMP_DIR"
 export CXXFLAGS="-distance=$TMP_DIR/distance.cfg.txt -outdir=$TMP_DIR"
 
 echo "Second compile."
@@ -148,6 +148,8 @@ if [ -d $TMP_DIR/rid_bbname_pairs.txt ];then
 fi
 make 
 echo "Second compile done."
+
+
 
 
 if [ ! -e $OBJ_FIXED ]; then
@@ -166,7 +168,7 @@ if [ ! -e $OBJ_FIXED ]; then
 fi
 
 if [ "$WHICH_AFLGO" == "good" ] ; then
-    $AFLGO/scripts/index_all_cfg_edges.py -d $TMP_DIR/dot-files
+    $AFLGO/scripts/index_all_cfg_edges.py -t $TMP_DIR
     #$AFLGO/tutorial/samples/test/vis-dot.sh $TMP_DIR/dot-files
 fi
 
